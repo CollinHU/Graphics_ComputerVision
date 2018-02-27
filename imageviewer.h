@@ -31,6 +31,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
    // void paintEvent(QPaintEvent *event) override;
     //void resizeEvent(QResizeEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 //private:
 
@@ -53,12 +54,13 @@ private slots:
     //void undo();
     void costGraph();
     void minPath();
+    void minPathEnable_drawMinPath(QPoint mousePoint);
     void drawMinPath(QPoint point);
     void pathTree();
     void pixelNode();
 
     void addFollowingSeedPoint();
-    void addFirstSeedPoint();
+    //void addFirstSeedPoint();
     void finishCurrentContour();
     void finishCurrentContourClose();
     void undo();
@@ -84,13 +86,17 @@ private:
 
     //void addSeedPoint();
     //void addFirstSeedPoint();
+    int selectedContour;
+    void selectContour();
 
-
+    bool minPathEnable;
     bool scribbling;
     bool moveEnable;
+    bool deBugEnable;
 
     QVector<QPoint> seedPoints;
     QVector<QPoint> wirePoints;
+    QVector<QVector<QPoint>> wirePointsVector;
 
     QPoint endPoint;
 
@@ -98,6 +104,7 @@ private:
     QLabel *imageLabel;
     QScrollArea *scrollArea;
     QPixmap qpixmap;//new add
+    QPixmap minPath_qpixmap;
     double scaleFactor;
 
 #ifndef QT_NO_PRINTER
@@ -122,7 +129,7 @@ private:
     QAction *pixelNodeAct;
     QAction *saveMaskAct;
 
-    QShortcut *addFirstSeedPointSC;
+    //QShortcut *addFirstSeedPointSC;
     QShortcut *addFollowingSeedPointSC;
     QShortcut *finishCurrentContourSC;
     QShortcut *finishCurrentContourCloseSC;

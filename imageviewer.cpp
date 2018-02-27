@@ -1,4 +1,4 @@
-#include <QtWidgets>
+﻿#include <QtWidgets>
 #if defined(QT_PRINTSUPPORT_LIB)
 #include <QtPrintSupport/qtprintsupportglobal.h>
 #if QT_CONFIG(printdialog)
@@ -43,8 +43,11 @@ static void initialGraphNode(const QImage *loadImage){
 
 
 ImageViewer::ImageViewer()
-   :  scribbling(false)
+   : selectedContour(-1)
+   , minPathEnable(false)
+   , scribbling(false)
    , moveEnable(false)
+   , deBugEnable(false)
    , imageLabel(new QLabel)
    , scrollArea(new QScrollArea)
    , scaleFactor(1)
@@ -127,6 +130,7 @@ void ImageViewer::setImage(const QImage &newImage)
     endPoint = QPoint(0,0);
     seedPoints.clear();
     wirePoints.clear();
+    wirePointsVector.clear();
 }
 
 
@@ -173,6 +177,9 @@ void ImageViewer::open()
 {
     scribbling = false;
     moveEnable = false;
+    minPathEnable = false;
+    deBugEnable = false;
+    selectedContour = -1;
 
     QFileDialog dialog(this, tr("Open File"));
     initializeImageFileDialog(dialog, QFileDialog::AcceptOpen);
@@ -194,6 +201,8 @@ void ImageViewer::print()
 {
     scribbling = false;
     moveEnable = false;
+    deBugEnable = false;
+    minPathEnable = false;
 
     Q_ASSERT(imageLabel->pixmap());
 #if QT_CONFIG(printdialog)
@@ -214,6 +223,8 @@ void ImageViewer::copy()
 {
     scribbling = false;
     moveEnable = false;
+    deBugEnable = false;
+    minPathEnable = false;
 
 #ifndef QT_NO_CLIPBOARD
     QGuiApplication::clipboard()->setImage(image);
@@ -238,6 +249,8 @@ void ImageViewer::paste()
 {
     scribbling = false;
     moveEnable = false;
+    deBugEnable = false;
+    minPathEnable = false;
 
 #ifndef QT_NO_CLIPBOARD
     const QImage newImage = clipboardImage();
@@ -305,6 +318,9 @@ void ImageViewer::imageOnly()
 {
    scribbling = false;
    moveEnable = false;
+   deBugEnable = false;
+   minPathEnable = false;
+
    int width = imageLabel->pixmap()->width();
    imageLabel->setPixmap(QPixmap::fromImage(image));
    scaleImage(double(width/imageLabel->pixmap()->width()));
@@ -312,35 +328,43 @@ void ImageViewer::imageOnly()
 
 void ImageViewer::imageWithContour()
 {
+    deBugEnable = false;
     imageLabel->setPixmap(qpixmap);
 }
 
 void ImageViewer::undo(){
 
-    if(seedPoints.isEmpty())
-        return;
-    seedPoints.pop_back();
-    if(!seedPoints.isEmpty())
+    if(!scribbling && !moveEnable && selectedContour >= 0)
     {
-        while((wirePoints.last() != seedPoints.last()  && !(wirePoints.isEmpty())))
-        {
-            wirePoints.pop_back();
-            //statusBar()->showMessage(QString("%1,%2").arg(wirePoints.size()).arg(seedPoints.size()));
-            //statusBar()->showMessage(QString("%1,%2,%3,%4").arg(lastSeed.x()).arg(lastWirePoint.x()).arg(lastSeed.y()).arg(lastWirePoint.y()));
-        }
+        wirePointsVector.remove(selectedContour);
+        selectedContour = -1;
     }
     else
-        wirePoints.clear();
-
-    if(seedPoints.size() == 1)
     {
-              wirePoints.clear();
-              seedPoints.clear();
+        if(seedPoints.isEmpty())
+            return;
+        seedPoints.pop_back();
+        wirePoints.pop_back();
+
+        if(!seedPoints.isEmpty())
+        {
+            while((wirePoints.last() != seedPoints.last()  && !(wirePoints.isEmpty())))
+            {
+                wirePoints.pop_back();
+                //statusBar()->showMessage(QString("%1,%2").arg(wirePoints.size()).arg(seedPoints.size()));
+                //statusBar()->showMessage(QString("%1,%2,%3,%4").arg(lastSeed.x()).arg(lastWirePoint.x()).arg(lastSeed.y()).arg(lastWirePoint.y()));
+            }
+        }
+
+        if(seedPoints.size() == 1)
+        {
+                  wirePoints.pop_back();
+                  seedPoints.clear();
+        }
+
+        if(!seedPoints.isEmpty())
+            shortestPath(seedPoints.last());
     }
-
-    if(!seedPoints.isEmpty())
-        shortestPath(seedPoints.last());
-
     qpixmap = QPixmap::fromImage(image);
     drawLineWithNode();
     statusBar()->showMessage(QString("%1,%2").arg(wirePoints.size()).arg(seedPoints.size()));
@@ -349,6 +373,8 @@ void ImageViewer::undo(){
 void ImageViewer::costGraph(){
     scribbling = false;
     moveEnable = false;
+    deBugEnable = true;
+    minPathEnable = false;
 
     int org_width = image.width();
     int org_height = image.height();
@@ -394,13 +420,17 @@ void ImageViewer::costGraph(){
     //imageLabel->resize(QPixmap::fromImage(tmp).size());
     //setImage(tmp);
     imageLabel->setPixmap(QPixmap::fromImage(tmp));
-    statusBar()->showMessage(QString("%1, %2").arg(tmp.width()).arg(tmp.height()));
-    //scaleImage(3.0);
+    //scaleFactor /= 3.0;
+    //scaleImage(1.0);
+   // scaleFactor *= 3.0;
+    //scaleImage(1.0);
 }
 
 void ImageViewer::pixelNode(){
     scribbling = false;
     moveEnable = false;
+    deBugEnable = true;
+    minPathEnable = false;
 
     int org_width = image.width();
     int org_height = image.height();
@@ -421,20 +451,69 @@ void ImageViewer::pixelNode(){
         }
     }
     //imageLabel->resize(QPixmap::fromImage(tmp).size());
-    //setImage(tmp);
+    //setImage(tmp)
     imageLabel->setPixmap(QPixmap::fromImage(tmp));
-    statusBar()->showMessage(QString("%1, %2").arg(tmp.width()).arg(tmp.height()));
+    //scaleFactor /= 3.0;
+    //scaleImage(1.0);
+   // statusBar()->showMessage(QString("%1, %2").arg(tmp.width()).arg(tmp.height()));
     //scaleImage(3.0);
 }
 
-
 void ImageViewer::minPath(){
-    scribbling = true;
+    scribbling = false;
     moveEnable = true;
+    deBugEnable = true;
+    minPathEnable = true;
 
+    //show path tree
+    if(seedPoints.isEmpty())
+        return;
+    shortestPath(seedPoints.last());
+
+    int tmpWidth = 3 * image.width();
+    int tmpHeight = 3 * image.height();
+
+    QImage tmp(tmpWidth, tmpHeight, QImage::Format_RGB32);
+    tmp.fill(Qt::black);
+    imageLabel->setPixmap(QPixmap::fromImage(tmp));
+
+    priority_queue<Node*, vector<Node*>, greaterNode> treeq;
+    for(int x = 0; x < image.width(); x++){
+        for(int y = 0; y < image.height(); y++){
+            treeq.push(&graphNode[x][y]);
+        }
+    }
+    int a_x, a_y;
+    while(!treeq.empty()){
+        Node* a = treeq.top();
+        a_x = a->row;
+        a_y = a->column;
+        treeq.pop();
+        int value = int(255 * a->totalCost /(costMax * 2) + 125);
+        tmp.setPixel(3 * a_x + 1, 3 * a_y + 1, QColor(value, value,0).rgb());
+        if(graphNode[a_x][a_y].prevNode != NULL)
+        {
+            int i = graphNode[a_x][a_y].prevNode->row - graphNode[a_x][a_y].row;
+            int j = graphNode[a_x][a_y].prevNode->column - graphNode[a_x][a_y].column;
+
+           //image.pixelColor(x,y).rgb());
+            tmp.setPixel(3 * a_x + 1 + i, 3 * a_y + 1 + j, QColor(value, value,0).rgb());
+            tmp.setPixel(3 * a_x + 1 + 2 * i, 3 * a_y + 1 + 2 * j, QColor(value, value,0).rgb());
+         }
+    }
+    minPath_qpixmap = QPixmap::fromImage(tmp);
+    imageLabel->setPixmap(minPath_qpixmap);
+    //scaleFactor /= 3.0;
+    //scaleImage(1.0);
+    //scaleFactor *= 3.0;
 }
 
 void ImageViewer::pathTree(){
+
+    minPathEnable = false;
+    moveEnable = false;
+    scribbling = false;
+    deBugEnable = true;
 
     if(seedPoints.isEmpty())
         return;
@@ -480,7 +559,12 @@ void ImageViewer::pathTree(){
         }
     }
 
+    //QSize tmpSize = imageLabel->pixmap()->size();
     imageLabel->setPixmap(QPixmap::fromImage(tmp));
+    //scaleFactor /= 3.0;
+    //scaleImage(1.0);
+    //scaleFactor *= 3.0;
+    //imageLabel->resize(tmpSize);
 }
 
 void ImageViewer::delay(){
@@ -489,17 +573,64 @@ void ImageViewer::delay(){
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
+void ImageViewer::minPathEnable_drawMinPath(QPoint mousePoint)
+{
+    if(seedPoints.isEmpty() || !moveEnable || !minPathEnable)
+            return;
+    //mousePoint /= 3;
+
+    imageLabel->setPixmap(minPath_qpixmap);
+    if(mousePoint.x() <= 0 ||mousePoint.y() <= 0 || !atImage(mousePoint))
+    {
+        imageLabel->setPixmap(minPath_qpixmap);
+        return;
+    }
+
+    QPixmap tmpPixmap = minPath_qpixmap.copy();
+    QPainter painter(&tmpPixmap);
+
+    painter.setPen(QPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin));
+
+    Node *node = &graphNode[mousePoint.x()][mousePoint.y()];
+    statusBar()->showMessage(QString("Mouse(%1,%2)*%3 = Node(%4,%5)").arg(mousePoint.x()).arg(mousePoint.y()).
+                             arg(scaleFactor).arg(node->row).arg(node->column));
+
+    while(node != NULL)
+    {
+        painter.drawPoint(QPoint(int(node->row*3),int(node->column*3)));
+
+        if(node->prevNode != NULL)
+        {
+            int i = node->prevNode->row - node->row;
+            int j = node->prevNode->column - node->column;
+
+           //image.pixelColor(x,y).rgb());
+            painter.drawPoint(QPoint(node->row *3 + 1 + i, node->column *3 + 1 + j));
+            painter.drawPoint(QPoint(node->row *3 + 1 + 2 * i, node->column*3 + 1 + 2 * j));
+         }
+
+        node = node->prevNode;
+    }
+    imageLabel->setPixmap(tmpPixmap);
+}
 
 void ImageViewer::drawMinPath(QPoint mousePoint){
 
     if(seedPoints.isEmpty() || !moveEnable)
         return;
+
     imageLabel->setPixmap(qpixmap);
+    if(mousePoint.x() <= 0 ||mousePoint.y() <= 0 || !atImage(mousePoint))
+    {
+        imageLabel->setPixmap(qpixmap);
+        return;
+    }
 
     QPixmap tmpPixmap = qpixmap.copy();
     QPainter painter(&tmpPixmap);
 
-    painter.setPen(QPen(Qt::green, 2, Qt::SolidLine, Qt::RoundCap,
+    painter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
 
 
@@ -537,8 +668,10 @@ void ImageViewer::saveMask()
 {
     scribbling = false;
     moveEnable = false;
+    deBugEnable = false;
+    minPathEnable = false;
 
-    if(wirePoints.isEmpty())
+    if(wirePointsVector.isEmpty())
         return;
 
     int tmpWidth = image.width();
@@ -555,8 +688,14 @@ void ImageViewer::saveMask()
         }
     }
 
-    for(int i = 0;i < wirePoints.size();i++){
-       maskMatrix[wirePoints.at(i).y() * tmpWidth + wirePoints.at(i).x()] = true;
+    for(int i = 0;i < wirePointsVector.size();i++)
+    {
+        for(int j = wirePointsVector.at(i).size() - 1;j >= 0;j--)
+        {
+            maskMatrix[wirePointsVector.at(i).at(j).y() * tmpWidth + wirePointsVector.at(i).at(j).x()] = true;
+            //if(seedPoints.size() > 1 && wirePoints.at(i) == seedPoints.at(seedPoints.size() - 2))
+                //break;
+        }
     }
 
     QVector<QPoint> expandMaskVec;
@@ -617,15 +756,17 @@ void ImageViewer::saveMask()
 
 }
 
+/*
 void ImageViewer::addFirstSeedPoint()
 {
     if(scribbling || image.isNull())
         return;
 
-    endPoint = cursorSnap(QWidget::mapFromGlobal(QCursor::pos()));
+    //endPoint = cursorSnap(QWidget::mapFromGlobal(QCursor::pos()));
     scribbling = true;
-    addFollowingSeedPoint();
+    //addFollowingSeedPoint();
 }
+*/
 
 void ImageViewer::addFollowingSeedPoint()
 {
@@ -637,7 +778,7 @@ void ImageViewer::addFollowingSeedPoint()
         return;
 
     //statusBar()->showMessage(QString("%1, %2, %3").arg(endPoint.x()).arg(graphNode[endPoint.x()][endPoint.y()].linkCost[0]).arg(endPoint.y()));
-
+    selectedContour = -1;
     Node *node = &graphNode[endPoint.x()][endPoint.y()];
     if(seedPoints.isEmpty())
     {
@@ -674,21 +815,33 @@ void ImageViewer::addFollowingSeedPoint()
 
 void ImageViewer::finishCurrentContourClose()
 {
-    //seedPoints.clear();
-    scribbling = false;
-    moveEnable = false;
-    imageLabel->setPixmap(qpixmap);
+    finishCurrentContour();
 }
 
 void ImageViewer::finishCurrentContour()
 {
-    //seedPoints.clear();
+    if(seedPoints.isEmpty() || !moveEnable || !scribbling)
+        return;
+    endPoint = seedPoints.first();
+    addFollowingSeedPoint();
+
+    QVector<QPoint> tmpVec;
+    for(int i = 0;i < wirePoints.size();i++)
+    {
+        QPoint tmpPoint = wirePoints.at(i);
+        tmpVec.append(QPoint(tmpPoint.x(),tmpPoint.y()));
+    }
+    if(!tmpVec.isEmpty())
+    {
+        wirePointsVector.append(tmpVec);
+    }
+
+    wirePoints.clear();
+    seedPoints.clear();
     scribbling = false;
     moveEnable = false;
     imageLabel->setPixmap(qpixmap);
 }
-
-
 
 void ImageViewer::createActions()
 {
@@ -776,9 +929,10 @@ void ImageViewer::createActions()
     pixelNodeAct = debugMode->addAction(tr("&Pixel Node"), this, &ImageViewer::pixelNode);
     pixelNodeAct->setEnabled(false);
 
-    addFirstSeedPointSC = new QShortcut(QKeySequence("Ctrl+Left"), this);
+    /*addFirstSeedPointSC = new QShortcut(QKeySequence("Ctrl"), this);
     QObject::connect(addFirstSeedPointSC, SIGNAL(activated()), this, SLOT(addFirstSeedPoint()));
     addFirstSeedPointSC->setEnabled(false);
+    */
 
     addFollowingSeedPointSC = new QShortcut(QKeySequence("Left"), this);
     QObject::connect(addFollowingSeedPointSC, SIGNAL(activated()), this, SLOT(addFollowingSeedPoint()));
@@ -814,7 +968,7 @@ void ImageViewer::updateActions()
     pixelNodeAct->setEnabled(!fitToWindowAct->isChecked());
     saveMaskAct->setEnabled(!fitToWindowAct->isChecked());
 
-    addFirstSeedPointSC->setEnabled(!fitToWindowAct->isChecked());
+   // addFirstSeedPointSC->setEnabled(!fitToWindowAct->isChecked());
     addFollowingSeedPointSC->setEnabled(!fitToWindowAct->isChecked());
     finishCurrentContourSC->setEnabled(!fitToWindowAct->isChecked());
     finishCurrentContourCloseSC->setEnabled(!fitToWindowAct->isChecked());
@@ -826,7 +980,7 @@ void ImageViewer::scaleImage(double factor)
 {
     Q_ASSERT(imageLabel->pixmap());
     scaleFactor *= factor;
-    imageLabel->resize(scaleFactor * imageLabel->pixmap()->size());
+    imageLabel->resize(scaleFactor * image.size());
 
     adjustScrollBar(scrollArea->horizontalScrollBar(), factor);
     adjustScrollBar(scrollArea->verticalScrollBar(), factor);
@@ -859,15 +1013,40 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event)
     else
         endPoint = cursorSnap(event->pos());
 
-    drawMinPath(endPoint);
+    if(!scribbling && !moveEnable)
+        selectContour();
+    else if(scribbling && !minPathEnable)
+    {
+        drawMinPath(endPoint);
+    }
+    else if(moveEnable && minPathEnable)
+    {
+        minPathEnable_drawMinPath(endPoint);
+    }
+    //drawMinPath(endPoint);
     statusBar()->showMessage(QString("%1, %2").arg(event->pos().x()).arg(event->pos().y()));
 
 }
 
+void ImageViewer::keyPressEvent(QKeyEvent *event)
+{
+    if( event->key() == Qt::Key_Control && !deBugEnable )
+    {
+       scribbling = true;
+       moveEnable = true;
+    }
+}
 
 void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 {
-     statusBar()->showMessage(QString("%1, %2").arg(event->pos().x()).arg(event->pos().y()));
+
+    if (event->button() == Qt::LeftButton && scribbling) {
+        if(!atImage(endPoint))
+            return;
+
+        addFollowingSeedPoint();
+    }
+    // statusBar()->showMessage(QString("%1, %2").arg(event->pos().x()).arg(event->pos().y()));
      //statusBar()->showMessage(QString("%1, %2").arg(wirePoints.size()).arg(seedPoints.size()));
 }
 
@@ -875,16 +1054,35 @@ void ImageViewer::drawLineWithNode()
 {
     QPainter painter(&qpixmap);
 
+    for(int i = 0;i < wirePointsVector.size();i++)
+    {
+        if(i == selectedContour)
+        {
+            painter.setPen(QPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap,
+                                Qt::RoundJoin));
+        }
+        else
+        {
+            painter.setPen(QPen(Qt::green, 2, Qt::SolidLine, Qt::RoundCap,
+                                Qt::RoundJoin));
+        }
+
+        for(int j = wirePointsVector.at(i).size() - 1;j >= 0;j--)
+        {
+            painter.drawPoint(wirePointsVector.at(i).at(j));
+            //if(seedPoints.size() > 1 && wirePoints.at(i) == seedPoints.at(seedPoints.size() - 2))
+                //break;
+        }
+    }
+
     painter.setPen(QPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
-
-    for(int i = wirePoints.size() - 1;i >= 0;i--)
+    for(int j = wirePoints.size() - 1;j >= 0;j--)
     {
-        painter.drawPoint(wirePoints.at(i));
+        painter.drawPoint(wirePoints.at(j));
         //if(seedPoints.size() > 1 && wirePoints.at(i) == seedPoints.at(seedPoints.size() - 2))
             //break;
     }
-
     imageLabel->setPixmap(qpixmap);
 }
 
@@ -1123,3 +1321,28 @@ void ImageViewer::computeCost(){
 
 }
 
+void ImageViewer::selectContour(){
+    if(scribbling && moveEnable)
+    {
+        selectedContour = -1;
+        return;
+    }
+    if(wirePointsVector.isEmpty())
+    {
+        selectedContour = -1;
+        return;
+    }
+    for(int i = 0;i < wirePointsVector.size();i++)
+    {
+        for(int j = 0;j < wirePointsVector.at(i).size();j++)
+        {
+            QPoint tmpPoint = wirePointsVector.at(i).at(j) - endPoint;
+            if((tmpPoint.x() * tmpPoint.x() + tmpPoint.y() * tmpPoint.y()) <= 4)
+            {
+                selectedContour = i;
+                return;
+            }
+        }
+    }
+    drawLineWithNode();
+}

@@ -13,8 +13,8 @@ TARGET = ImageViewer
 TEMPLATE = app
 
 
-INCLUDEPATH += /usr/local/Cellar/opencv/3.4.0_1/include
-LIBS += -L/usr/local/Cellar/opencv/3.4.0_1/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
+#INCLUDEPATH += /usr/local/Cellar/opencv/3.4.0_1/include
+#LIBS += -L/usr/local/Cellar/opencv/3.4.0_1/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
