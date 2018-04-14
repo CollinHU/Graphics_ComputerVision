@@ -36,7 +36,8 @@ features_pos = zeros(num_images, (feature_params.template_size / feature_params.
 for i = 1: num_images
     img = imread( fullfile( train_path_pos, image_files(i).name ));
     %img = imresize(img,8/9);
-    %img = single(img)/255;
+    img = imadjust(img,[],[],0.25);
+    img = single(img);
     hog= vl_hog(single(img),feature_params.hog_cell_size);
     features_pos(i,:) = reshape(hog,1,[]);
 end

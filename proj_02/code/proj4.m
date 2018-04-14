@@ -44,10 +44,12 @@ run('vlfeat/toolbox/vl_setup')
 data_path = '../data/'; %change if you want to work with a network copy
 train_path_pos = fullfile(data_path, 'caltech_faces/Caltech_CropFaces'); %Positive training examples. 36x36 head crops
 non_face_scn_path = fullfile(data_path, 'train_non_face_scenes'); %We can mine random or hard negatives from here
+
 test_scn_path = fullfile(data_path,'test_scenes/test_jpg'); %CMU+MIT test scenes
 % test_scn_path = fullfile(data_path,'extra_test_scenes'); %Bonus scenes
 label_path = fullfile(data_path,'test_scenes/ground_truth_bboxes.txt'); %the ground truth face locations in the test set
-
+%test_scn_path = fullfile(data_path,'bonus_competition/test_jpg');
+%label_path = fullfile(data_path,'bonus_competition/ground_truth_bboxes.txt');
 %The faces are 36x36 pixels, which works fine as a template size. You could
 %add other fields to this struct if you want to modify HoG default
 %parameters such as the number of orientations, but that does not help
@@ -60,7 +62,7 @@ feature_params = struct('template_size', 36, 'hog_cell_size', 6);
 
 features_pos = get_positive_features( train_path_pos, feature_params );
 
-num_negative_examples = 10000; %Higher will work strictly better, but you should start with 10000 for debugging
+num_negative_examples = 20000; %Higher will work strictly better, but you should start with 10000 for debugging
 features_neg = get_random_negative_features( non_face_scn_path, feature_params, num_negative_examples);
 
     
@@ -68,14 +70,14 @@ features_neg = get_random_negative_features( non_face_scn_path, feature_params, 
 % Use vl_svmtrain on your training features to get a linear classifier
 % specified by 'w' and 'b'
 X = [features_pos; features_neg];
-er = 0.0001;
-%X =normr(X);
+%er = 0.0001;
+%X =zscore(X);
 X = X';
 %size(X_row_l1_norm)
 %size(X)
 Y = [ones(size(features_pos,1),1); -1*ones(size(features_neg,1),1)];
 
-lambda = 0.001;
+lambda = 0.0001;
 
 [w, b] = vl_svmtrain(X, Y, lambda);
 % http://www.vlfeat.org/sandbox/matlab/vl_svmtrain.html

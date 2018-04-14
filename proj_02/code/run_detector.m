@@ -47,8 +47,10 @@ confidences = zeros(0,1);
 image_ids = cell(0,1);
 num_cell_per_window_side = feature_params.template_size / feature_params.hog_cell_size;
 cell_size = feature_params.hog_cell_size;
-%window_width = cell_size * num_cell_per_window_side;
-scales = [1,0.85,0.75,0.6,0.5,0.4,0.25,0.15,0.1,0.07];
+window_width = cell_size * num_cell_per_window_side;
+image_width = 360;
+
+scales = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
 stride = 1;
 
 for i = 1:length(test_scenes)
@@ -60,12 +62,16 @@ for i = 1:length(test_scenes)
         img = rgb2gray(img);
     end
     
+    img = imadjust(img,[],[],0.25);
     factor = 1.0;
     cur_confidences = zeros(0, 1);
     cur_bboxes = zeros(0, 4);
     cur_image_ids = zeros(0,1);
-    while(factor > 0.07)
-        tmpImg = imresize(img,factor);
+    %factor = image_width / min(size(img));
+    tmpImg = imresize(img,factor);
+    while(size(tmpImg,1) >= window_width && size(tmpImg,2) >= window_width)
+    %for factor = scales
+        %tmpImg = imresize(img,factor);
         hog = vl_hog(single(tmpImg), cell_size);
     
         width  = (size(hog,2) - num_cell_per_window_side)/stride + 1;
@@ -98,9 +104,9 @@ for i = 1:length(test_scenes)
         end
         
         X = features_img;
-        %X = normr(X);
+        %X = zscore(X);
         predict = X * w + b;
-        positive = find(predict > 0.5);
+        positive = find(predict > 0.55);%0.75
  
         %You can delete all of this below.
         % Let's create 15 random detections per image
@@ -125,6 +131,7 @@ for i = 1:length(test_scenes)
         %can get higher recall with a lower threshold. You don't need to modify
         %anything in non_max_supr_bbox, but you can.
         factor = factor * 0.9;
+        tmpImg = imresize(img,factor);
     end
     [is_maximum] = non_max_supr_bbox(cur_bboxes, cur_confidences, size(img));
 

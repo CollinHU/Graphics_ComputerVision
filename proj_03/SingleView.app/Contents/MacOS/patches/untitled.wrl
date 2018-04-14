@@ -1,0 +1,127 @@
+#VRML V2.0 utf8
+
+Collision {
+	collide FALSE
+	children [
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "testyz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "realceil.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "realceil.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "y.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "ty.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+    ]
+}

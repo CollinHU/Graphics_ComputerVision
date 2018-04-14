@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>400</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <widget class="QMenu" name="menuChooseRefPt">
+     <property name="title">
+      <string>ChooseRefPt</string>
+     </property>
+     <addaction name="actionChooseXRef"/>
+     <addaction name="actionChooseYRef"/>
+     <addaction name="actionChooseZRef"/>
+     <addaction name="actionChooseOrigin"/>
+    </widget>
+    <addaction name="actionXLines"/>
+    <addaction name="actionYLines"/>
+    <addaction name="actionZLines"/>
+    <addaction name="menuChooseRefPt"/>
+    <addaction name="actionPtPool"/>
+    <addaction name="actionPolygon"/>
+    <addaction name="separator"/>
+    <addaction name="actionRescale"/>
+    <addaction name="actionReset"/>
+   </widget>
+   <widget class="QMenu" name="menuCalculation">
+    <property name="title">
+     <string>Calculation</string>
+    </property>
+    <widget class="QMenu" name="menuTexture">
+     <property name="title">
+      <string>Texture</string>
+     </property>
+     <addaction name="actionXY_Plane"/>
+     <addaction name="actionXZ_Plane"/>
+     <addaction name="actionYZ_Plane"/>
+    </widget>
+    <addaction name="actionXVPoint"/>
+    <addaction name="actionYVPoint"/>
+    <addaction name="actionZVPoint"/>
+    <addaction name="actionHomography"/>
+    <addaction name="menuTexture"/>
+    <addaction name="actionScene2Image"/>
+    <addaction name="actionShowPlane"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuCalculation"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionXLines">
+   <property name="text">
+    <string>XLines</string>
+   </property>
+  </action>
+  <action name="actionYLines">
+   <property name="text">
+    <string>YLines</string>
+   </property>
+  </action>
+  <action name="actionZLines">
+   <property name="text">
+    <string>ZLines</string>
+   </property>
+  </action>
+  <action name="actionRPlane">
+   <property name="text">
+    <string>RPlane</string>
+   </property>
+  </action>
+  <action name="actionRHeight">
+   <property name="text">
+    <string>RHeight</string>
+   </property>
+  </action>
+  <action name="actionPolygon">
+   <property name="text">
+    <string>Polygon</string>
+   </property>
+  </action>
+  <action name="actionRescale">
+   <property name="text">
+    <string>Rescale</string>
+   </property>
+  </action>
+  <action name="actionReset">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionXVPoint">
+   <property name="text">
+    <string>XVPoint</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionYVPoint">
+   <property name="text">
+    <string>YVPoint</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionZVPoint">
+   <property name="text">
+    <string>ZVPoint</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionHomography">
+   <property name="text">
+    <string>Homography</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionAlpha">
+   <property name="text">
+    <string>Alpha</string>
+   </property>
+  </action>
+  <action name="actionScene2Image">
+   <property name="text">
+    <string>Scene2Image</string>
+   </property>
+  </action>
+  <action name="actionPtPool">
+   <property name="text">
+    <string>PtPool</string>
+   </property>
+  </action>
+  <action name="actionChooseXRef">
+   <property name="text">
+    <string>ChooseXRef</string>
+   </property>
+  </action>
+  <action name="actionChooseYRef">
+   <property name="text">
+    <string>ChooseYRef</string>
+   </property>
+  </action>
+  <action name="actionChooseZRef">
+   <property name="text">
+    <string>ChooseZRef</string>
+   </property>
+  </action>
+  <action name="actiontest">
+   <property name="text">
+    <string>test</string>
+   </property>
+  </action>
+  <action name="actionChooseOrigin">
+   <property name="text">
+    <string>ChooseOrigin</string>
+   </property>
+  </action>
+  <action name="actionXY_Plane">
+   <property name="text">
+    <string>XY Plane</string>
+   </property>
+  </action>
+  <action name="actionXZ_Plane">
+   <property name="text">
+    <string>XZ Plane</string>
+   </property>
+  </action>
+  <action name="actionYZ_Plane">
+   <property name="text">
+    <string>YZ Plane</string>
+   </property>
+  </action>
+  <action name="actionShowPlane">
+   <property name="text">
+    <string>ShowPlane</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

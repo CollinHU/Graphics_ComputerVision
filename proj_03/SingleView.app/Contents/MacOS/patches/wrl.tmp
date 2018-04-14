@@ -1,0 +1,371 @@
+#VRML V2.0 utf8
+
+Collision {
+	collide FALSE
+	children [
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "testyz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "realceil.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "realceil.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "y.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "ty.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paintxz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paint_exp_xz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paint_exp_xy.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paint_exp_xz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paint_exp_yz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+            ]
+        }
+        coordIndex [
+            -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            ]
+        }
+        texCoordIndex [
+            -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paint_exp_xy.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+                1.44287 1.7769 0,
+                191.894 13.6043 0,
+                176.653 118.931 0,
+                -3.85864 107.824 0,
+            ]
+        }
+        coordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            0.0277698 0.993416 ,
+            0.999461 0.893184 ,
+            0.921699 0.000587373 ,
+            0.000721244 0.0947109 ,
+            ]
+        }
+        texCoordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paint_exp_xz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+                1.44287 1.7769 0,
+                1.44287 1.7769 167.262,
+                207.188 -17.4792 167.262,
+                191.894 13.6043 0,
+            ]
+        }
+        coordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            0.00213948 1 ,
+            0.00213948 0.00439191 ,
+            0.996078 0.00439191 ,
+            0.922195 1 ,
+            ]
+        }
+        texCoordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paint_exp_yz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+                1.44287 1.7769 0,
+                1.44287 1.7769 167.262,
+                2.61756 95.4862 167.262,
+            ]
+        }
+        coordIndex [
+            0, 1, 2, -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            0.00817792 1 ,
+            0.00817792 0.00439191 ,
+            0.994591 0.00439191 ,
+            ]
+        }
+        texCoordIndex [
+            0, 1, 2, -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "paint_exp_xy0.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+                1.44287 1.7769 167.262,
+                207.188 -17.4792 167.262,
+                2.61756 95.4862 167.262,
+            ]
+        }
+        coordIndex [
+            0, 1, 2, -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            0.00213948 0.826518 ,
+            0.996078 0.995431 ,
+            0.0078143 0.00450719 ,
+            ]
+        }
+        texCoordIndex [
+            0, 1, 2, -1,
+      ]
+        solid FALSE
+    }
+}
+    ]
+}
