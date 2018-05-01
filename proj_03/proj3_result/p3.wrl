@@ -1,0 +1,135 @@
+#VRML V2.0 utf8
+
+Collision {
+	collide FALSE
+	children [
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "real_floor.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+                7.84832 16.2883 143.757,
+                101.462 30.4928 143.757,
+                90.8408 115.88 143.757,
+                7.98265 133.307 143.757,
+            ]
+        }
+        coordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            0.00892973 0.997557 ,
+            0.99434 0.87718 ,
+            0.882535 0.153561 ,
+            0.0103437 0.00587636 ,
+            ]
+        }
+        texCoordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "real_yz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+                7.84832 16.2883 143.757,
+                7.98265 133.307 143.757,
+                -1.12178 106.801 0,
+                1.42109e-14 -2.84217e-14 0,
+            ]
+        }
+        coordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            0.128062 0.00168537 ,
+            0.994864 0.00168537 ,
+            0.798524 1 ,
+            0.00740741 1 ,
+            ]
+        }
+        texCoordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "real_xz.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+                7.84832 16.2883 143.757,
+                101.462 30.4928 143.757,
+                105.034 0.252718 0,
+                1.42109e-14 -2.84217e-14 0,
+            ]
+        }
+        coordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            0.0740408 0.00168537 ,
+            0.957192 0.00168537 ,
+            0.99089 1 ,
+            1.34065e-16 1 ,
+            ]
+        }
+        texCoordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        solid FALSE
+    }
+}
+Shape {
+    appearance Appearance {
+        texture ImageTexture {
+            url "real_ceil.png"
+        }
+    }
+    geometry IndexedFaceSet {
+        coord Coordinate {
+            point [
+                1.42109e-14 -2.84217e-14 0,
+                105.034 0.252718 0,
+                96.8821 80.0759 0,
+                -1.12178 106.801 0,
+            ]
+        }
+        coordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        texCoord TextureCoordinate {
+            point [
+            0.0185185 0.990741 ,
+            0.991059 0.988401 ,
+            0.915575 0.249297 ,
+            0.00813167 0.0018448 ,
+            ]
+        }
+        texCoordIndex [
+            0, 1, 2, 3, -1,
+      ]
+        solid FALSE
+    }
+}
+    ]
+}
